@@ -3,7 +3,7 @@ import AuthLayout from '../../components/layouts/AuthLayout';
 import { Link, useNavigate } from 'react-router-dom';
 import Input from '../../components/Inputs/Input';
 import { validateEmail } from '../../utils/helper';
-import { ProfilePhotoSelector } from '../../components/Inputs/ProfilePhotoSelector';
+import ProfilePhotoSelector from '../../components/Inputs/ProfilePhotoSelector';
 
 const SignUp = () => {
   const [profilePic, setProfilePic] = useState(null);
@@ -16,7 +16,39 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   //Handle Sign Up Form Submit
-  const handleSignUp = async (e) => {};
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+
+    let profileImageUrl="";
+
+    if(!fullName) {
+      setError("Please enter your name!");
+      return;
+    }
+
+    if(!validateEmail(email)){
+      setError("Please enter a valid email address!");
+      return;
+    }
+
+    if(!password){
+      setError("Please enter the password");
+      return;
+    }
+
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?\":{}|<>]/.test(password);
+    
+    if (!hasUpperCase || !hasNumber || !hasSpecialChar) {
+      setError("Password must contain at least one uppercase letter, one number, and one special character.");
+      return;
+    }
+
+    setError("");
+
+    //SingUp API Call
+  };
   
   return(
     <AuthLayout>
@@ -54,8 +86,19 @@ const SignUp = () => {
                 type="password"
               />
             </div>
-
           </div>
+          {error && <p className='text-red-500 text-xs pb-2.5'>{error}</p>}
+
+          <button type='submit' className='btn-primary cursor-pointer'>
+            SIGNUP
+          </button>
+
+          <p className='text-[13px] text-slate-800 mt-3'>
+            Already have an account? {" "}
+            <Link className='font-medium text-primary underline' to="/login">
+              Login
+            </Link>
+          </p>
         </form>
       </div>
     </AuthLayout>
